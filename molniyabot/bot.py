@@ -10,20 +10,24 @@ from aiogram.utils.keyboard import InlineKeyboardBuilder
 from cachetools import TTLCache
 from aiogram.dispatcher.flags import get_flag
 from typing import Any, Awaitable, Callable, Dict, MutableMapping, Optional
+from aiogram.filters.chat_member_updated import ChatMemberUpdatedFilter, IS_NOT_MEMBER, MEMBER, ADMINISTRATOR, KICKED
 from aiogram.filters import BaseFilter
-from aiogram.types import Message
+from aiogram.types import ChatMemberUpdated, Message, CallbackQuery, WebAppData
 import os
 import re
 import sqlite3
 import time
 
 API_TOKEN = ""
-ADMIN = 123
+ADMIN = 470208396
+
+TEST_CHAT_ID = -1002641661606
+CHANNEL_WITH_POSTS = -1002505296360
 
 
 # Настройка логирования
 logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger('copybot')
+logger = logging.getLogger('molnyabot')
 
 # Инициализация бота и диспетчера
 bot = Bot(token=API_TOKEN)
@@ -140,13 +144,60 @@ async def start(user_id, chat_id):
         cursor.execute('INSERT INTO users (id, chat_id) VALUES (?, ?)', (user_id, chat_id))
         conn.commit()
         await bot.send_message(ADMIN, f"👤 Новый пользователь в боте:\n{user_id}")
+
+    keyboard = types.InlineKeyboardMarkup(
+    inline_keyboard=[[
+        types.InlineKeyboardButton(
+            text="😎 WEB APP",
+            web_app=types.WebAppInfo(url=f"https://tydu4.github.io/start")
+        )
+    ]]
+    )
+    photo = types.FSInputFile(r"photo/5.jpg")
+    await bot.send_photo(chat_id=chat_id, photo=photo, caption="*Салам* 🐉",parse_mode='Markdown', reply_markup=keyboard)
+
+
+
+class GetUserAdPost(StatesGroup):
+    wait_for_post = State()
+    confirm_post = State()
+
+@router.message(Command("post"), ChatTypeFilter(chat_type=["private"]))
+async def ask_for_post(message: Message, state: FSMContext):
+    await message.reply("Скинь пост мне, деньги нужны мне", parse_mode='Markdown')
+    await state.set_state(GetUserAdPost.wait_for_post)
+
+@router.message(GetUserAdPost.wait_for_post, F)
+async def receive_post_and_ask_confirm(message: Message, state: FSMContext):
+    await state.update_data(post_id=message.message_id)
+
+    await bot.copy_message(chat_id=message.chat.id, from_chat_id=message.chat.id, message_id=message.message_id)
+
     kb = [
-        [types.KeyboardButton(text="😨 Каталог стикеров❓"),],
+        [types.KeyboardButton(text=r"️Иди на хуй")],
+        [types.KeyboardButton(text=r"️-")],
     ]
-    
     keyboard = types.ReplyKeyboardMarkup(keyboard=kb, resize_keyboard=True)
-    photo = types.FSInputFile(r"photo/5.png")
-    await bot.send_photo(chat_id=chat_id, photo=photo, caption="*Приветствую, выбери с чем бот может тебе помочь 🤝*\n\n👋 Этот бот может *копировать стикеры и эмодзи.*\n\nWelcome! 🤙🏻 *This bot can copy stickers and emojis.*\n\n[e4zybot](t.me/e4zybot) *x* [HelpLovBot](t.me/HelpLovBot)",parse_mode='Markdown', reply_markup=keyboard)
+
+    await bot.send_message(chat_id=message.chat.id, text="Подходит?", reply_markup=keyboard)
+    await state.set_state(GetUserAdPost.confirm_post)
+
+@router.message(GetUserAdPost.confirm_post, F.text)
+async def process_confirmation(message: Message, state: FSMContext):
+    text = message.text.strip()
+    data = await state.get_data()
+    post_id = data.get('post_id')
+
+    if "Иди на хуй" in text:
+        await bot.send_message(chat_id=message.chat.id, text="Сообщение сохранено", reply_markup=types.ReplyKeyboardRemove())
+        await bot.copy_message(chat_id=CHANNEL_WITH_POSTS, from_chat_id=message.chat.id, message_id=post_id)
+        await state.clear()
+    else:
+        await bot.send_message(chat_id=message.chat.id, text="Тогда отправь пост заново", reply_markup=types.ReplyKeyboardRemove())
+        await state.set_state(GetUserAdPost.wait_for_post)
+
+
+    
 
 @router.chat_join_request()
 async def start1(update: types.ChatJoinRequest):
@@ -155,6 +206,24 @@ async def start1(update: types.ChatJoinRequest):
     await bot.send_message(chat_id=user_id, text=f"*Ваша заявка в {update.chat.title} одобрена, приятного времяпровождения 😈*", parse_mode='Markdown')
     await bot.send_message(ADMIN, f"👤 Новый пользователь присоединился в канал:\n{user_id}")
     await start(user_id, user_id)
+
+@router.my_chat_member(ChatMemberUpdatedFilter(member_status_changed=ADMINISTRATOR))
+async def bot_added_as_admin(event: ChatMemberUpdated):
+    # if event.chat.type == "channel" то это канал его ток хенлдить
+    await bot.send_message(chat_id=TEST_CHAT_ID, text=f"Я админ {event.chat.type} ID чата: {event.chat.id}")
+
+@router.my_chat_member(ChatMemberUpdatedFilter(member_status_changed=MEMBER))
+async def bot_added_as_admin_from_member(event: ChatMemberUpdated):
+    await bot.send_message(chat_id=TEST_CHAT_ID, text=f"Я мембер {event.chat.type} ID чата: {event.chat.id}")
+
+@router.my_chat_member(ChatMemberUpdatedFilter(member_status_changed=IS_NOT_MEMBER))
+async def bot_added_as_member(event: ChatMemberUpdated):
+    await bot.send_message(chat_id=TEST_CHAT_ID, text=f"Я не мембер {event.chat.type} ID чата: {event.chat.id}")
+
+@router.my_chat_member(ChatMemberUpdatedFilter(member_status_changed=KICKED))
+async def user_unblocked_bot(event: ChatMemberUpdated):
+    await bot.send_message(chat_id=TEST_CHAT_ID, text=f"Меня кикнули {event.chat.type} ID чата: {event.chat.id}")
+
 
 @router.message(ChatTypeFilter(chat_type=["private", "group", "supergroup"]), Command(r"start"))
 async def start_command(message: types.Message):
@@ -190,92 +259,6 @@ async def send_message(message: types.Message):
             blocked += 1
     await bot.send_message(ADMIN,
                            f"📤 Рассылка закончилась.\n✅ Было отправлено {sent} сообщений\n🚫 Бот заблокирован у {blocked} пользователей")
-
-
-
-@router.message(AdminFilter(), ChatTypeFilter(chat_type=["private"]), Command("addpack"))
-async def add_my_pack(message: types.Message):
-    find = re.search(r"t\.me/add(stickers|emoji)/(\w+) (.+)", message.text)
-    if not find:
-        await message.reply("🤬 Невалидная ссылка")
-        return
-    set_name = find[2]
-    emoji_or_stickers = find[1]
-    link_name = find[3]
-    full_link = f"http://t.me/add{emoji_or_stickers}/{set_name}"
-    # Получаем информацию о стикерпаке
-    try: 
-        sticker_set = await bot.get_sticker_set(set_name)
-    except Exception as e:
-        await message.reply("🤬 такого пака нет")
-        return
-    # Выполняем SQL-запрос для проверки наличия ссылки в базе данных
-    cursor.execute("SELECT * FROM stickerlinks WHERE link_url=?", (full_link,))
-    result = cursor.fetchone()
-
-    if result is not None:
-        await message.reply(f"🤬 Ссылка с URL '{full_link}' уже существует в базе данных.")
-    else:
-        cursor.execute("INSERT INTO stickerlinks (link_url, link_name) VALUES (?, ?)", (full_link, link_name))
-        await message.reply(f"Ссылка {full_link} добавлена в базу данных")
-
-@router.message(AdminFilter(), ChatTypeFilter(chat_type=["private"]), Command("delpack"))
-async def del_pack(message: types.Message):
-    find = re.search(r"t\.me/add(stickers|emoji)/(\w+)", message.text)
-    if not find:
-        await message.reply("🤬 Невалидная ссылка")
-        return
-    set_name = find[2]
-    emoji_or_stickers = find[1]
-    full_link = f"http://t.me/add{emoji_or_stickers}/{set_name}"
-    # Получаем информацию о стикерпаке
-    cursor.execute("DELETE FROM stickerlinks WHERE link_url=?", (full_link,))
-    await message.reply(f"Ссылка {full_link} удалена из базы данных")
-
-
-
-
-def create_pagination_keyboard(current_page=1, links_per_page=5):
-    cursor.execute("SELECT link_url, link_name FROM stickerlinks LIMIT ? OFFSET ?", (links_per_page, (current_page - 1) * links_per_page))
-    stickers = cursor.fetchall()
-    builder = InlineKeyboardBuilder()
-    btn_counter = 0
-    for sticker_id in range(len(stickers)):
-        sticker = stickers[sticker_id]
-        sticker_link = sticker[0]
-        sticker_name = sticker[1]
-        if btn_counter == 2:
-            btn_counter = 0
-        if btn_counter == 0:
-            builder.row(types.InlineKeyboardButton(text=sticker_name, url=sticker_link), width=2)
-        else:
-            builder.add(types.InlineKeyboardButton(text=sticker_name, url=sticker_link))
-        btn_counter += 1
-    next_button_callback = f'my_stickers_page{current_page+1}'
-    back_button_callback = f'my_stickers_page{current_page-1}'
-    if len(stickers) < links_per_page:
-        next_button_callback = 'do_nothing'
-    if current_page == 1:
-        back_button_callback = 'do_nothing'
-    builder.row(types.InlineKeyboardButton(text="⬅️ Назад", callback_data=back_button_callback), types.InlineKeyboardButton(text="Вперёд ➡️", callback_data=next_button_callback))
-    return builder.as_markup()
-
-
-@router.message(ChatTypeFilter(chat_type=["private"]) and MessageTextFilter(message_text="😨 Каталог стикеров❓"), F.text)
-async def all_my_stickers(message: types.message):
-    kb = create_pagination_keyboard()
-    await message.answer("Все мои стикеры:", reply_markup=kb)
-
-@dp.callback_query(F.data.startswith("my_stickers_page"))
-async def stickers_pagination(callback: types.CallbackQuery):
-    res = re.search(r"-?\d+", callback.data)
-    if res:
-        res = res[0]
-    else:
-        return
-    kb = create_pagination_keyboard(int(res))
-    await callback.message.answer("Все мои стикеры:", reply_markup=kb)
-
 
 
 @router.message(ChatTypeFilter(chat_type=["private"]), F.text)
