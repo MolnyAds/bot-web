@@ -1,23 +1,18 @@
 <template>
   <div id="app">
-    <nav>
-      <router-link to="/" exact-active-class="active">Главная</router-link> |
-      <router-link to="/balance" exact-active-class="active">Баланс</router-link> |
-      <router-link to="/mychannels" exact-active-class="active">Мои каналы</router-link> |
-      <router-link to="/adcatalog" exact-active-class="active">Каталог реклам</router-link> |
-      <router-link to="/catalog" exact-active-class="active">Каталог</router-link> |
-      <router-link to="/myad" exact-active-class="active">Детали покупки</router-link> |
-      <router-link to="/profile" exact-active-class="active">Профиль</router-link> |
-      <router-link to="/channel" exact-active-class="active">Страница канала</router-link>
-    </nav>
     <router-view />
   </div>
 </template>
 
-<script>
-export default {
-  name: 'App'
-}
+<script setup>
+import { onMounted } from 'vue'
+import { useAppStore } from '@/stores/app'
+
+const appStore = useAppStore()
+
+onMounted(() => {
+  appStore.initTelegram()
+})
 </script>
 
 <style>

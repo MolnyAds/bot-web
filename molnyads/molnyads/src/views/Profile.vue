@@ -1,13 +1,8 @@
 <template>
   <div class="container">
     <router-link to="/" class="back-btn">←</router-link>
-
-    <div class="header">
-      <div class="logo">
-        <div class="logo-icon">📊</div>
-        <div class="logo-text">Статистика</div>
-      </div>
-      <div class="profile-icon">👤</div>
+    <div class="catalog-header">
+      <h1 class="catalog-title">Профиль</h1>
     </div>
 
     <div class="stats-container">
@@ -84,7 +79,7 @@
         <div class="stats-content">
           <div class="stats-data">
             <div class="stat-item">
-              <span class="stat-label">Размещений:</span>
+              <span class="stat-label">Продаж:</span>
               <span class="stat-value large">0</span>
             </div>
             <div class="stat-item">
@@ -110,23 +105,6 @@
       </div>
 
       <!-- Продажа рекламы -->
-      <div class="stats-block">
-        <div class="stats-block-title">Продажа рекламы</div>
-        <div class="channels-stats">
-          <div class="channel-stat-item">
-            <div class="stat-label">Размещений:</div>
-            <div class="stat-value large">0</div>
-          </div>
-          <div class="channel-stat-item">
-            <div class="stat-label">Заработок:</div>
-            <div class="stat-value large">0</div>
-          </div>
-          <div class="channel-stat-item">
-            <div class="stat-label">Средняя цена:</div>
-            <div class="stat-value">200</div>
-          </div>
-        </div>
-      </div>
     </div>
   </div>
 </template>

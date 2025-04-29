@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <router-link to="/channels" class="back-btn">←</router-link>
+    <router-link to="/mychannels" class="back-btn">←</router-link>
 
     <div class="channel-header">
       <div class="channel-title">Molny Channel</div>

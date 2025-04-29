@@ -21,16 +21,18 @@
     </div>
 
     <div class="ads-grid">
-      <div class="ad-card" v-for="(ad, idx) in ads" :key="idx">
-        <div class="ad-type">{{ ad.slot }}</div>
-        <div class="ad-icon">📢</div>
-        <div class="ad-info">
-          <div class="ad-title">Название канала</div>
-          <div class="ad-date">{{ ad.date }}</div>
+      <router-link to="/myad" v-for="(ad, idx) in ads" :key="idx">
+        <div class="ad-card">
+          <div class="ad-type">{{ ad.slot }}</div>
+          <div class="ad-icon">📢</div>
+          <div class="ad-info">
+            <div class="ad-title">Название канала</div>
+            <div class="ad-date">{{ ad.date }}</div>
+          </div>
+          <div class="ad-price">{{ ad.price }} ₽</div>
+          <div :class="['ad-status', ad.statusClass]">{{ ad.status }}</div>
         </div>
-        <div class="ad-price">{{ ad.price }} ₽</div>
-        <div :class="['ad-status', ad.statusClass]">{{ ad.status }}</div>
-      </div>
+      </router-link>
     </div>
 
     <div class="pagination">

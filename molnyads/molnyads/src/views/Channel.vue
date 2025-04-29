@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <router-link to="/channels" class="back-btn">←</router-link>
+    <router-link to="/adcatalog" class="back-btn">←</router-link>
 
     <div class="channel-header">
       <h1 class="channel-title">Название канала</h1>
@@ -15,11 +15,11 @@
       <div class="channel-links">
         <div class="link-item">
           <div class="link-icon telegram-icon">✈</div>
-          <div class="link-text"><strong>t.me:</strong><br><a href="#" class="link-url">t.me/channelname</a></div>
+          <div class="link-text"><span class="text-bold">t.me:</span> <a href="#" class="link-url">t.me/channelname</a></div>
         </div>
         <div class="link-item">
           <div class="link-icon tgstat-icon">📊</div>
-          <div class="link-text"><strong>TGStat:</strong><br><a href="#" class="link-url">tgstat.com/channel/@channelname</a></div>
+          <div class="link-text"><span class="text-bold">TGStat:</span> <a href="#" class="link-url">tgstat.com/channel/@channelname</a></div>
         </div>
       </div>
     </div>

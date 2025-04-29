@@ -53,6 +53,14 @@ a {
     font-weight: bold;
 }
 
+.text-bold{
+    font-weight: bold;
+}
+
+.text-center{
+    text-align: center;
+}
+
 .logo-text {
     font-size: 28px;
     font-weight: 700;
@@ -71,6 +79,13 @@ a {
     font-size: 24px;
 }
 
+.profile-icon img {
+    height: 100%;
+    width: 100%;
+    border-radius: 50%;
+    overflow: hidden;
+}
+
 .balance-section {
     padding: 30px 25px;
     background: rgba(240, 244, 248, 0.8);
@@ -80,6 +95,8 @@ a {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
 }
 
 .balance-info h3 {
@@ -231,7 +248,11 @@ a {
 
 .channel-visual {
     display: flex;
+    flex-direction: column;
     align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    flex-shrink: 1;
     gap: 20px;
     padding: 0 25px;
     margin-bottom: 30px;
@@ -269,7 +290,9 @@ a {
 .link-item {
     display: flex;
     align-items: center;
+    flex: 1;
     gap: 10px;
+    flex-wrap: wrap;
 }
 
 .link-icon {
@@ -300,6 +323,7 @@ a {
     color: #3182ce;
     text-decoration: none;
     font-weight: 500;
+    word-break: break-all;
 }
 
 .link-url:hover {
@@ -422,6 +446,7 @@ a {
 
 .filter-row {
     display: flex;
+    flex-direction: column;
     gap: 12px;
 }
 
@@ -441,6 +466,7 @@ a {
     background-repeat: no-repeat;
     background-size: 16px;
     padding-right: 40px;
+    overflow: hidden;
 }
 
 .filter-select:focus {
@@ -452,7 +478,7 @@ a {
 .channels-grid {
     padding: 20px 25px;
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
     gap: 15px;
 }
 
@@ -465,6 +491,7 @@ a {
     transition: all 0.3s ease;
     display: flex;
     flex-direction: column;
+    align-items: center;
     gap: 12px;
 }
 
@@ -623,6 +650,7 @@ a {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 30px;
+    flex-wrap: wrap;
 }
 
 .balance-info-main {
@@ -687,6 +715,8 @@ a {
     align-items: center;
     gap: 16px;
     transition: all 0.3s ease;
+    flex-wrap: wrap;
+    justify-content: center;
 }
 
 .transaction-item:hover {
@@ -776,6 +806,8 @@ a {
             align-items: center;
             gap: 16px;
             margin-bottom: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
         }
 
         .purchase-channel-icon {
@@ -829,6 +861,7 @@ a {
             align-items: center;
             padding: 12px 0;
             border-bottom: 1px solid rgba(226, 232, 240, 0.5);
+            flex-wrap: wrap;
         }
 
         .purchase-detail-row:last-child {
@@ -851,6 +884,7 @@ a {
         .purchase-actions {
             padding: 0 25px 30px;
             display: flex;
+            flex-wrap: wrap;
             gap: 15px;
         }
 
@@ -939,11 +973,13 @@ a {
         .stats-content {
             display: flex;
             align-items: center;
+            justify-content: space-between;
             gap: 20px;
+            flex-wrap: wrap-reverse;
         }
 
         .stats-data {
-            flex: 1;
+            flex-grow: 0;
             display: flex;
             flex-direction: column;
             gap: 12px;
@@ -966,6 +1002,7 @@ a {
             color: #2d3748;
             font-size: 24px;
             font-weight: 700;
+            word-break: break-all;
         }
 
         .stat-value.large {
@@ -973,8 +1010,8 @@ a {
         }
 
         .chart-container {
-            width: 120px;
-            height: 120px;
+            width: 110px;
+            height: 100%;
             position: relative;
             flex-shrink: 0;
         }
@@ -1003,7 +1040,6 @@ a {
             display: flex;
             flex-direction: column;
             gap: 8px;
-            margin-top: 15px;
         }
 
         .legend-item {
@@ -1143,7 +1179,7 @@ a {
 
         .channel-info-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
             gap: 15px;
             margin-bottom: 20px;
         }
@@ -1172,6 +1208,7 @@ a {
             display: flex;
             gap: 12px;
             margin-top: 20px;
+            flex-wrap: wrap;
         }
 
         .action-btn {
@@ -1225,6 +1262,7 @@ a {
             transition: all 0.3s ease;
             display: flex;
             align-items: center;
+            flex-direction: column;
             gap: 20px;
         }
 
@@ -1313,6 +1351,7 @@ a {
             display: flex;
             gap: 12px;
             margin-bottom: 20px;
+            flex-wrap: wrap;
         }
 
         .filter-btn {
@@ -1351,3 +1390,11 @@ a {
             font-size: 12px;
         }
 /* adcatalog */
+
+
+
+@media (max-width: 400px) {
+    .container {
+    max-width: 90vw;
+}
+}

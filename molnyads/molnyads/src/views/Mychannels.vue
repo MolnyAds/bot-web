@@ -30,12 +30,14 @@
     </div>
 
     <div class="channels-grid">
-      <div class="channel-card" v-for="(channel, idx) in 8" :key="idx">
-        <div class="channel-card-icon business">💼</div>
-        <div class="channel-name">Название канала</div>
-        <div class="channel-category">Категория</div>
-        <div class="channel-sales">120 продаж</div>
-      </div>
+      <router-link to="/mychannel" v-for="(channel, idx) in 8" :key="idx">
+        <div class="channel-card">
+            <div class="channel-card-icon business">💼</div>
+            <div class="channel-name">Название канала</div>
+            <div class="channel-category">Категория</div>
+            <div class="channel-sales">120 продаж</div>
+        </div>
+      </router-link>
     </div>
 
     <div class="pagination">

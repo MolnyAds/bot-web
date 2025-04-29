@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <router-link to="/" class="back-btn">←</router-link>
+    <router-link to="/adcatalog" class="back-btn">←</router-link>
 
     <div class="purchase-header">
       <div class="purchase-title">Детали покупки</div>

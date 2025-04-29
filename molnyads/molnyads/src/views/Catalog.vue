@@ -28,12 +28,14 @@
     </div>
 
     <div class="channels-grid">
-      <div class="channel-card" v-for="(item, i) in 8" :key="i">
-        <div class="channel-card-icon business">💼</div>
-        <div class="channel-name">Название канала</div>
-        <div class="channel-category">Категория</div>
-        <div class="channel-price">от 2 000 ₽</div>
-      </div>
+        <router-link to="channel"  v-for="(item, i) in 8" :key="i">
+          <div class="channel-card">
+            <div class="channel-card-icon business">💼</div>
+            <div class="channel-name">Название канала</div>
+            <div class="channel-category">Категория</div>
+            <div class="channel-price">от 2 000 ₽</div>
+          </div>
+        </router-link>
     </div>
 
     <div class="pagination">
