@@ -1,0 +1,2 @@
+TOKEN = "7652513664:AAGDiK4Ga6sJ14hP0vgapQYR_oMHP9CmMAI"
+DATABASE_URL = "sqlite:///test.db"

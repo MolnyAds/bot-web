@@ -14,6 +14,12 @@ ads_schedule = Table(
     Column("schedule_id", Integer, ForeignKey("schedule.id"), primary_key=True)
 )
 
+groups_schedule = Table(
+    "groups_schedule", Base.metadata,
+    Column("group_id", Integer, ForeignKey("groups.id"), primary_key=True),
+    Column("schedule_id", Integer, ForeignKey("schedule.id"), primary_key=True),
+)
+
 class User(Base):
     __tablename__ = "users"
     id = Column(Integer, primary_key=True, unique=True, index=True)
@@ -34,6 +40,7 @@ class Group(Base):
 
     owner = relationship("User")
     subjects = relationship("Subject", secondary=groups_subjects, back_populates="groups")
+    schedules = relationship("Schedule", secondary=groups_schedule, backref="groups")
 
 class Subject(Base):
     __tablename__ = "subjects"
@@ -42,7 +49,7 @@ class Subject(Base):
     groups = relationship("Group", secondary=groups_subjects, back_populates="subjects")
 
 class AdvertisementType(Base):
-    __tablename__ = "post_advertisements"
+    __tablename__ = "advertisement_types"
     id = Column(Integer, primary_key=True)
     duration_in_hours = Column(Integer, nullable=False)
     top_duration_in_hours = Column(Integer)
@@ -53,7 +60,7 @@ class Advertisement(Base):
     __tablename__ = "advertisements"
     id = Column(Integer, primary_key=True)
     group_id = Column(Integer, ForeignKey("groups.id"), nullable=False)
-    ad_type_id = Column(Integer, ForeignKey("post_advertisements.id"), nullable=False)
+    ad_type_id = Column(Integer, ForeignKey("advertisement_types.id"), nullable=False)
     cost = Column(Float, nullable=False)
     created_at = Column(DateTime, default=datetime.datetime.utcnow)
 
@@ -89,6 +96,7 @@ class Placement(Base):
     ad_id = Column(Integer, ForeignKey("advertisements.id"), nullable=False)
     buyer_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     placement_date = Column(DateTime, nullable=False)
+    message_id = Column(Integer, nullable=False)
     status_id = Column(Integer, ForeignKey("statuses.id"), nullable=False)
     created_at = Column(DateTime, default=datetime.datetime.utcnow)
 
